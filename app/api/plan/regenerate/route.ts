@@ -8,6 +8,7 @@ import { GeneratedPlanSchema } from "@/lib/weeklyPlan";
 
 // Claude's response can take longer than Vercel's default 10s function
 // limit, especially with adaptive thinking - allow up to the platform max.
+// Requires ANTHROPIC_API_KEY to be set in the deployment environment.
 export const maxDuration = 60;
 
 export async function POST() {
