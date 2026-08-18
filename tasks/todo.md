@@ -147,15 +147,16 @@ listing drills grouped by skill area.
 format) and the score-logging form, wired to a new API route.
 
 **Acceptance criteria:**
-- [ ] `/drills/[id]` shows the drill's instructions and scoring format
-- [ ] A form logs a score in ≤3 inputs (value + optional note)
-- [ ] `POST /api/scores` creates a `ScoreLog` linked to the drill
-- [ ] Newly logged scores appear on the page (e.g. a recent-scores list)
+- [x] `/drills/[id]` shows the drill's instructions and scoring format
+- [x] A form logs a score in 2 inputs (value + optional note)
+- [x] `POST /api/scores` creates a `ScoreLog` linked to the drill
+- [x] Newly logged scores appear on the page (recent-scores list, 10 max)
 
 **Verification:**
-- [ ] Build succeeds: `npm run build`
-- [ ] Manual check: log a score, confirm it persists (reload the page,
-      check `prisma studio`)
+- [x] Build succeeds: `npm run build`
+- [x] Manual check: logged real scores via HTTP against a throwaway
+      Postgres instance, confirmed they persist and render (value +
+      note), confirmed 400 (missing value) and 404 (bad drillId) paths
 
 **Dependencies:** Task 4
 
@@ -173,15 +174,20 @@ format) and the score-logging form, wired to a new API route.
 aggregated per skill area.
 
 **Acceptance criteria:**
-- [ ] Per-drill trend visible on the drill detail page (simple line/points
-      chart of `ScoreLog.value` over `loggedAt`)
-- [ ] A `/trends` page (or section) shows aggregated trends per skill area
-- [ ] Renders sensibly with zero, one, and many data points
+- [x] Per-drill trend visible on the drill detail page (inline SVG chart
+      of `ScoreLog.value` over `loggedAt`, no new dependency)
+- [x] A `/trends` page shows drills grouped by skill area, each with its
+      own trend (kept per-drill rather than blended into one number per
+      area, since drills in the same area use incompatible units)
+- [x] Renders sensibly with zero, one, and many data points
 
 **Verification:**
-- [ ] Build succeeds: `npm run build`
-- [ ] Manual check: log several scores for one drill, confirm the trend
-      chart updates and looks correct
+- [x] Build succeeds: `npm run build`; `npm test` passes (6 tests,
+      TDD - RED caught a real bug in the identical-values edge case
+      before GREEN)
+- [x] Manual check: verified all three states (0/1/4 scores) against a
+      throwaway Postgres instance on both `/trends` and the drill
+      detail page
 
 **Dependencies:** Task 5
 
@@ -200,15 +206,17 @@ aggregated per skill area.
 none exists yet.
 
 **Acceptance criteria:**
-- [ ] `/` shows the latest `WeeklyPlan`'s summary and focus items
+- [x] `/` shows the latest `WeeklyPlan`'s summary and focus items
       (drill, target, why) when one exists
-- [ ] Shows an empty state with a call-to-action when no plan exists yet
-- [ ] Each focus item links to its drill
+- [x] Shows an empty state with a call-to-action when no plan exists yet
+- [x] Each focus item links to its drill
 
 **Verification:**
-- [ ] Build succeeds: `npm run build`
-- [ ] Manual check: with an empty DB, empty state renders; after manually
-      inserting a `WeeklyPlan` row, it renders correctly
+- [x] Build succeeds: `npm run build`
+- [x] Manual check: verified against a throwaway Postgres instance —
+      empty state renders with no WeeklyPlan row; after inserting one
+      referencing real drills, summary/names/links/reps/notes all
+      render correctly
 
 **Dependencies:** Task 4
 
@@ -225,17 +233,20 @@ none exists yet.
 `SPEC.md` and surface it as a banner on the home screen.
 
 **Acceptance criteria:**
-- [ ] `lib/planNudge.ts` exports a function taking the last plan's
+- [x] `lib/planNudge.ts` exports a function taking the last plan's
       `generatedAt` (or `null`) and the count of `ScoreLog`s logged since,
       returning whether to nudge (per SPEC.md: `daysSinceLastPlan >= 7` OR
       `newScoreLogsSinceLastPlan >= 10`, always true if no plan exists)
-- [ ] Home screen shows a banner/badge when the nudge is active, with a
-      link/button to regenerate (wired in Task 9)
+- [x] Home screen shows a banner/badge when the nudge is active, with a
+      link/button to regenerate (button present but inert - wired in Task 9)
 
 **Verification:**
-- [ ] Unit test: `npm test -- planNudge` covers no-plan, time-threshold,
-      volume-threshold, and neither-threshold cases
-- [ ] Manual check: banner appears/disappears correctly as test data changes
+- [x] Unit test: `npm test` covers no-plan, time-threshold (both sides of
+      the boundary), volume-threshold (both sides), and both-thresholds
+      cases — 7 tests, TDD
+- [x] Manual check: verified against a throwaway Postgres instance across
+      3 real scenarios (fresh plan, 8-day-old plan, 12 new scores) —
+      banner appeared/disappeared exactly as expected each time
 
 **Dependencies:** Task 7
 
