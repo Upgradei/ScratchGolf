@@ -14,12 +14,11 @@ project skeleton and get it deployed to Vercel as a placeholder.
 - [x] `npx create-next-app` project exists with TypeScript + Tailwind + App Router
 - [x] Basic layout (`app/layout.tsx`) with mobile-first viewport meta and a
       placeholder home page
-- [ ] Project pushed and connected to Vercel, deploys successfully
-      — **blocked:** needs the user's Vercel account access
+- [x] Project pushed and connected to Vercel, deploys successfully
 
 **Verification:**
 - [x] Build succeeds: `npm run build`
-- [ ] Manual check: deployed URL loads on a phone browser — blocked, see above
+- [x] Manual check: deployed URL loads on a phone browser — confirmed by user
 
 **Dependencies:** None
 
@@ -39,18 +38,20 @@ integration, and run the initial migration.
 
 **Acceptance criteria:**
 - [x] `prisma/schema.prisma` matches the data model in `SPEC.md`
-- [x] `DATABASE_URL` configured (local `.env.example` documents it; real
-      value pending Neon DB creation — needs Vercel account access)
+- [x] `DATABASE_URL` configured (`.env.example` documents it; real Neon DB
+      created and connected via Vercel Storage)
 - [x] Initial migration applied; `lib/db.ts` exports a singleton Prisma client
       (Prisma 7 changed the client constructor to require a driver
       adapter — used `@prisma/adapter-neon`, see commit)
 
 **Verification:**
 - [x] `npx prisma migrate dev` runs clean — verified against a throwaway
-      local Postgres instance (no access to the real Neon DB from this
-      environment); migration SQL matches SPEC.md's data model exactly
-- [ ] Manual check: `npx prisma studio` shows the three empty tables —
-      pending real Neon DB connection
+      local Postgres instance; migration SQL matches SPEC.md's data model
+      exactly
+- [x] Manual check: tables created in the real Neon DB — this sandbox
+      can't reach Postgres directly (HTTPS-only egress), so the user ran
+      the migration SQL via Neon's own SQL Editor instead; confirmed
+      "statement executed successfully"
 
 **Dependencies:** Task 1
 
@@ -94,11 +95,13 @@ session cookie, and middleware that protects all other routes.
 
 ## Checkpoint: Foundation
 - [x] `npm run build` succeeds
-- [ ] App deploys to Vercel and shows a placeholder home page —
-      **blocked on Vercel account access, see Task 1**
+- [x] App deploys to Vercel and shows a placeholder home page
 - [x] Visiting any page redirects to `/login` when unauthenticated
 - [x] Correct password sets a session cookie and grants access
-- [ ] **Review with human before proceeding**
+- [x] **Reviewed with human — confirmed working live on phone browser**
+
+**Foundation phase complete.** App is live on Vercel with a real Neon
+Postgres database, migrated and connected. Ready for Phase 2.
 
 ---
 
