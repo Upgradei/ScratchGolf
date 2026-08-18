@@ -6,6 +6,10 @@ import { anthropic } from "@/lib/anthropic";
 import { buildPlanPrompt } from "@/lib/buildPlanPrompt";
 import { GeneratedPlanSchema } from "@/lib/weeklyPlan";
 
+// Claude's response can take longer than Vercel's default 10s function
+// limit, especially with adaptive thinking - allow up to the platform max.
+export const maxDuration = 60;
+
 export async function POST() {
   const drills = await db.drill.findMany();
   const recentScoreLogs = await db.scoreLog.findMany({
@@ -36,7 +40,10 @@ export async function POST() {
       max_tokens: 4096,
       system,
       messages: [{ role: "user", content: user }],
-      output_config: { format: zodOutputFormat(GeneratedPlanSchema) },
+      output_config: {
+        effort: "medium",
+        format: zodOutputFormat(GeneratedPlanSchema),
+      },
     });
   } catch (error) {
     if (error instanceof Anthropic.AuthenticationError) {
