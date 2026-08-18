@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
 import { ScoreLogForm } from "@/components/ScoreLogForm";
+import { TrendChart } from "@/components/TrendChart";
 
 export const dynamic = "force-dynamic";
 
@@ -16,11 +17,11 @@ export default async function DrillDetailPage({
     notFound();
   }
 
-  const recentScores = await db.scoreLog.findMany({
+  const allScores = await db.scoreLog.findMany({
     where: { drillId: id },
     orderBy: { loggedAt: "desc" },
-    take: 10,
   });
+  const recentScores = allScores.slice(0, 10);
 
   return (
     <main className="flex flex-1 flex-col gap-6 px-4 py-6">
@@ -32,6 +33,11 @@ export default async function DrillDetailPage({
       </div>
 
       <ScoreLogForm drillId={drill.id} />
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-semibold">Trend</h2>
+        <TrendChart scores={allScores} />
+      </section>
 
       <section className="flex flex-col gap-2">
         <h2 className="text-lg font-semibold">Recent scores</h2>
