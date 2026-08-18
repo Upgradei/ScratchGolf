@@ -1,0 +1,46 @@
+// Prisma schema for ScratchGolf — see SPEC.md for the full data model rationale.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum SkillArea {
+  DRIVER
+  APPROACH
+  CHIPPING
+  PUTTING
+}
+
+model Drill {
+  id           String     @id @default(cuid())
+  name         String
+  skillArea    SkillArea
+  description  String
+  instructions String
+  scoreLabel   String
+  createdAt    DateTime   @default(now())
+  scoreLogs    ScoreLog[]
+}
+
+model ScoreLog {
+  id       String   @id @default(cuid())
+  drillId  String
+  drill    Drill    @relation(fields: [drillId], references: [id])
+  value    Float
+  note     String?
+  loggedAt DateTime @default(now())
+
+  @@index([drillId])
+}
+
+model WeeklyPlan {
+  id          String   @id @default(cuid())
+  generatedAt DateTime @default(now())
+  summary     String
+  items       Json
+}
