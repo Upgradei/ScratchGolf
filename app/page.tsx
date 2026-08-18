@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { db } from "@/lib/db";
 import { parsePlanItems } from "@/lib/weeklyPlan";
+import { shouldNudgeRegeneration } from "@/lib/planNudge";
 import { WeeklyPlanCard } from "@/components/WeeklyPlanCard";
+import { PlanNudgeBanner } from "@/components/PlanNudgeBanner";
 
 export const dynamic = "force-dynamic";
 
@@ -34,9 +36,19 @@ export default async function Home() {
   });
   const drillNames = new Map(drills.map((d) => [d.id, d.name]));
 
+  const newScoreLogCount = await db.scoreLog.count({
+    where: { loggedAt: { gt: latestPlan.generatedAt } },
+  });
+  const showNudge = shouldNudgeRegeneration({
+    lastPlanGeneratedAt: latestPlan.generatedAt,
+    newScoreLogCount,
+    now: new Date(),
+  });
+
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-6">
       <h1 className="text-2xl font-semibold">This week&apos;s plan</h1>
+      {showNudge && <PlanNudgeBanner />}
       <WeeklyPlanCard
         summary={latestPlan.summary}
         generatedAt={latestPlan.generatedAt}
