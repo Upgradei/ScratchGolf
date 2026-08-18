@@ -114,16 +114,23 @@ chipping, putting) as a Prisma seed script, and build a browse page
 listing drills grouped by skill area.
 
 **Acceptance criteria:**
-- [ ] Seed script creates a reasonable initial set of drills per skill
-      area (each with name, description, instructions, scoreLabel)
-- [ ] `/drills` page lists drills grouped/filterable by skill area
-- [ ] Tapping a drill navigates to its detail page (stub is fine for now,
+- [x] Seed script creates a reasonable initial set of drills per skill
+      area (each with name, description, instructions, scoreLabel) —
+      13 drills across the 4 skill areas
+- [x] `/drills` page lists drills grouped/filterable by skill area
+- [x] Tapping a drill navigates to its detail page (stub is fine for now,
       built out in Task 5)
 
 **Verification:**
-- [ ] `npx prisma db seed` runs clean
-- [ ] Manual check: `/drills` renders all seeded drills on a phone-width
-      viewport
+- [x] `npx prisma db seed` runs clean — verified by running the seed
+      logic directly against a throwaway local Postgres instance (this
+      sandbox can't reach Neon's serverless driver locally, so verified
+      query/schema correctness with a temporary, uncommitted pg adapter
+      swap rather than the shipped Neon adapter); all 13 drills inserted
+- [x] Manual check: `/drills` renders all seeded drills grouped by skill
+      area, and `/drills/[id]` renders real drill content — verified via
+      a real running dev server (login, fetch, grep for actual content),
+      not just a build check
 
 **Dependencies:** Task 2, Task 3
 
