@@ -11,31 +11,30 @@ import { GeneratedPlanSchema } from "@/lib/weeklyPlan";
 export const maxDuration = 60;
 
 export async function POST() {
-  const drills = await db.drill.findMany();
-  const recentScoreLogs = await db.scoreLog.findMany({
-    orderBy: { loggedAt: "desc" },
-    take: 50,
-    include: { drill: true },
-  });
-
-  const { system, user } = buildPlanPrompt(
-    drills.map((d) => ({
-      id: d.id,
-      name: d.name,
-      skillArea: d.skillArea,
-      scoreLabel: d.scoreLabel,
-    })),
-    recentScoreLogs.map((s) => ({
-      drillId: s.drillId,
-      drillName: s.drill.name,
-      value: s.value,
-      loggedAt: s.loggedAt,
-    })),
-  );
-
-  let response;
   try {
-    response = await anthropic.messages.parse({
+    const drills = await db.drill.findMany();
+    const recentScoreLogs = await db.scoreLog.findMany({
+      orderBy: { loggedAt: "desc" },
+      take: 50,
+      include: { drill: true },
+    });
+
+    const { system, user } = buildPlanPrompt(
+      drills.map((d) => ({
+        id: d.id,
+        name: d.name,
+        skillArea: d.skillArea,
+        scoreLabel: d.scoreLabel,
+      })),
+      recentScoreLogs.map((s) => ({
+        drillId: s.drillId,
+        drillName: s.drill.name,
+        value: s.value,
+        loggedAt: s.loggedAt,
+      })),
+    );
+
+    const response = await anthropic.messages.parse({
       model: "claude-opus-5",
       max_tokens: 4096,
       system,
@@ -45,6 +44,34 @@ export async function POST() {
         format: zodOutputFormat(GeneratedPlanSchema),
       },
     });
+
+    const parsed = response.parsed_output;
+    if (!parsed) {
+      return NextResponse.json(
+        { error: "Failed to generate a valid plan" },
+        { status: 502 },
+      );
+    }
+
+    const validDrillIds = new Set(drills.map((d) => d.id));
+    const invalidItem = parsed.items.find(
+      (item) => !validDrillIds.has(item.drillId),
+    );
+    if (invalidItem) {
+      return NextResponse.json(
+        { error: "Generated plan referenced an unknown drill" },
+        { status: 502 },
+      );
+    }
+
+    const weeklyPlan = await db.weeklyPlan.create({
+      data: {
+        summary: parsed.summary,
+        items: parsed.items,
+      },
+    });
+
+    return NextResponse.json({ weeklyPlan }, { status: 201 });
   } catch (error) {
     if (error instanceof Anthropic.AuthenticationError) {
       return NextResponse.json(
@@ -64,32 +91,11 @@ export async function POST() {
         { status: 502 },
       );
     }
-    throw error;
-  }
-
-  const parsed = response.parsed_output;
-  if (!parsed) {
+    console.error("Plan regeneration failed:", error);
+    const message = error instanceof Error ? error.message : String(error);
     return NextResponse.json(
-      { error: "Failed to generate a valid plan" },
-      { status: 502 },
+      { error: `Unexpected error: ${message}` },
+      { status: 500 },
     );
   }
-
-  const validDrillIds = new Set(drills.map((d) => d.id));
-  const invalidItem = parsed.items.find((item) => !validDrillIds.has(item.drillId));
-  if (invalidItem) {
-    return NextResponse.json(
-      { error: "Generated plan referenced an unknown drill" },
-      { status: 502 },
-    );
-  }
-
-  const weeklyPlan = await db.weeklyPlan.create({
-    data: {
-      summary: parsed.summary,
-      items: parsed.items,
-    },
-  });
-
-  return NextResponse.json({ weeklyPlan }, { status: 201 });
 }
