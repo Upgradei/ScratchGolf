@@ -1,8 +1,23 @@
+import { z } from "zod";
+
 export type PlanItem = {
   drillId: string;
   focusNote: string;
   targetReps: number;
 };
+
+export const GeneratedPlanSchema = z.object({
+  summary: z.string(),
+  items: z.array(
+    z.object({
+      drillId: z.string(),
+      focusNote: z.string(),
+      targetReps: z.number(),
+    }),
+  ),
+});
+
+export type GeneratedPlan = z.infer<typeof GeneratedPlanSchema>;
 
 export function parsePlanItems(items: unknown): PlanItem[] {
   if (!Array.isArray(items)) return [];

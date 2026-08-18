@@ -4,6 +4,7 @@ import { parsePlanItems } from "@/lib/weeklyPlan";
 import { shouldNudgeRegeneration } from "@/lib/planNudge";
 import { WeeklyPlanCard } from "@/components/WeeklyPlanCard";
 import { PlanNudgeBanner } from "@/components/PlanNudgeBanner";
+import { GeneratePlanButton } from "@/components/GeneratePlanButton";
 
 export const dynamic = "force-dynamic";
 
@@ -20,12 +21,15 @@ export default async function Home() {
           No training plan yet. Browse the drills, log a few scores, then
           generate your first weekly plan.
         </p>
-        <Link
-          href="/drills"
-          className="rounded-lg bg-emerald-600 px-6 py-3 text-white"
-        >
-          Browse drills
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/drills"
+            className="rounded-lg border border-neutral-300 px-6 py-3"
+          >
+            Browse drills
+          </Link>
+          <GeneratePlanButton />
+        </div>
       </main>
     );
   }
