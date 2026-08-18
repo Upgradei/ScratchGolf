@@ -265,21 +265,26 @@ Anthropic API to produce a new weekly plan, validates the response shape,
 and stores it as a new `WeeklyPlan`.
 
 **Acceptance criteria:**
-- [ ] `POST /api/plan/regenerate` builds a prompt from recent `ScoreLog`s
+- [x] `POST /api/plan/regenerate` builds a prompt from recent `ScoreLog`s
       and the `Drill` library, calls the Anthropic API server-side (key
       never sent to the client)
-- [ ] Response is validated against an expected shape (narrative summary +
-      list of `{drillId, focusNote, targetReps}`); on validation failure,
-      returns an error instead of storing malformed data
-- [ ] On success, stores a new `WeeklyPlan` and the home screen reflects it
-- [ ] "Regenerate" button on the home screen (from Task 8's banner or
-      always-visible) triggers this and shows a loading state
+- [x] Response is validated against an expected shape (Zod schema:
+      narrative summary + list of `{drillId, focusNote, targetReps}`,
+      plus a check that every drillId is real); on validation failure,
+      returns a 502 error instead of storing malformed data
+- [x] On success, stores a new `WeeklyPlan` and the home screen reflects it
+- [x] "Regenerate" button on the home screen (nudge banner + empty-state
+      "Generate my first plan") triggers this and shows a loading state
 
 **Verification:**
-- [ ] Unit test: prompt-construction function tested with mocked drill/score
-      inputs (no live API call in tests)
+- [x] Unit test: `buildPlanPrompt` tested with drill/score inputs (no live
+      API call in tests) — 5 tests
 - [ ] Manual check: trigger regeneration for real, confirm a sensible plan
-      is generated and displayed
+      is generated and displayed — **pending the user's own test once
+      `ANTHROPIC_API_KEY` is set on Vercel** (this sandbox verified the
+      error-handling path with a deliberately invalid key — caught and
+      fixed a real unhandled-exception bug — but has no real key to test
+      the happy path)
 
 **Dependencies:** Task 8
 
