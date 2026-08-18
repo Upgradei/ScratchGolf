@@ -11,14 +11,15 @@ See `SPEC.md` for the full specification.
 project skeleton and get it deployed to Vercel as a placeholder.
 
 **Acceptance criteria:**
-- [ ] `npx create-next-app` project exists with TypeScript + Tailwind + App Router
-- [ ] Basic layout (`app/layout.tsx`) with mobile-first viewport meta and a
+- [x] `npx create-next-app` project exists with TypeScript + Tailwind + App Router
+- [x] Basic layout (`app/layout.tsx`) with mobile-first viewport meta and a
       placeholder home page
 - [ ] Project pushed and connected to Vercel, deploys successfully
+      — **blocked:** needs the user's Vercel account access
 
 **Verification:**
-- [ ] Build succeeds: `npm run build`
-- [ ] Manual check: deployed URL loads on a phone browser
+- [x] Build succeeds: `npm run build`
+- [ ] Manual check: deployed URL loads on a phone browser — blocked, see above
 
 **Dependencies:** None
 
@@ -37,13 +38,19 @@ models from `SPEC.md`, connect to a Neon Postgres database via Vercel's
 integration, and run the initial migration.
 
 **Acceptance criteria:**
-- [ ] `prisma/schema.prisma` matches the data model in `SPEC.md`
-- [ ] `DATABASE_URL` configured (local `.env` for dev, Vercel env var for prod)
-- [ ] Initial migration applied; `lib/db.ts` exports a singleton Prisma client
+- [x] `prisma/schema.prisma` matches the data model in `SPEC.md`
+- [x] `DATABASE_URL` configured (local `.env.example` documents it; real
+      value pending Neon DB creation — needs Vercel account access)
+- [x] Initial migration applied; `lib/db.ts` exports a singleton Prisma client
+      (Prisma 7 changed the client constructor to require a driver
+      adapter — used `@prisma/adapter-neon`, see commit)
 
 **Verification:**
-- [ ] `npx prisma migrate dev` runs clean
-- [ ] Manual check: `npx prisma studio` shows the three empty tables
+- [x] `npx prisma migrate dev` runs clean — verified against a throwaway
+      local Postgres instance (no access to the real Neon DB from this
+      environment); migration SQL matches SPEC.md's data model exactly
+- [ ] Manual check: `npx prisma studio` shows the three empty tables —
+      pending real Neon DB connection
 
 **Dependencies:** Task 1
 
@@ -61,33 +68,36 @@ page, API route that checks `APP_PASSWORD` and sets a signed HTTP-only
 session cookie, and middleware that protects all other routes.
 
 **Acceptance criteria:**
-- [ ] `/login` page with a password field
-- [ ] `POST /api/auth/login` validates against `APP_PASSWORD` and sets a
+- [x] `/login` page with a password field
+- [x] `POST /api/auth/login` validates against `APP_PASSWORD` and sets a
       signed session cookie on success, returns an error on failure
-- [ ] Middleware redirects unauthenticated requests to any other route to
-      `/login`
-- [ ] A logout action clears the cookie
+- [x] Middleware (now `proxy.ts` — Next.js 16 renamed the convention)
+      redirects unauthenticated requests to any other route to `/login`
+- [x] A logout action clears the cookie
 
 **Verification:**
-- [ ] Build succeeds: `npm run build`
-- [ ] Manual check: wrong password rejected, correct password grants
-      access and persists across a page reload
+- [x] Build succeeds: `npm run build`
+- [x] Manual check: wrong password rejected (401), correct password
+      grants access and persists across requests (200), logout clears it,
+      next request redirects to `/login` (307) — verified end-to-end
+      against a running dev server
 
 **Dependencies:** Task 1
 
 **Files likely touched:**
-- `app/login/page.tsx`, `app/api/auth/login/route.ts`, `middleware.ts`,
-  `lib/session.ts`
+- `app/login/page.tsx`, `app/api/auth/login/route.ts`,
+  `app/api/auth/logout/route.ts`, `proxy.ts`, `lib/session.ts`
 
 **Estimated scope:** Medium
 
 ---
 
 ## Checkpoint: Foundation
-- [ ] `npm run build` succeeds
-- [ ] App deploys to Vercel and shows a placeholder home page
-- [ ] Visiting any page redirects to `/login` when unauthenticated
-- [ ] Correct password sets a session cookie and grants access
+- [x] `npm run build` succeeds
+- [ ] App deploys to Vercel and shows a placeholder home page —
+      **blocked on Vercel account access, see Task 1**
+- [x] Visiting any page redirects to `/login` when unauthenticated
+- [x] Correct password sets a session cookie and grants access
 - [ ] **Review with human before proceeding**
 
 ---
