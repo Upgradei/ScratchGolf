@@ -8,9 +8,9 @@ export default async function DrillsPage() {
 
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-6">
-      <h1 className="text-2xl font-semibold">Drills</h1>
+      <h1 className="text-xl font-semibold text-fairway-800">Drills</h1>
       {drills.length === 0 ? (
-        <p className="text-neutral-500">No drills yet.</p>
+        <p className="text-sand-500">No drills yet.</p>
       ) : (
         <DrillList drills={drills} />
       )}

@@ -8,12 +8,12 @@ export function TrendChart({ scores }: { scores: TrendPoint[] }) {
   const points = toTrendPoints(scores);
 
   if (points.length === 0) {
-    return <p className="text-sm text-neutral-500">No scores yet.</p>;
+    return <p className="text-sm text-sand-500">No scores yet.</p>;
   }
 
   if (points.length === 1) {
     return (
-      <p className="text-sm text-neutral-500">
+      <p className="text-sm text-sand-500">
         One score so far: <span className="font-medium">{points[0].value}</span>
       </p>
     );
@@ -33,14 +33,14 @@ export function TrendChart({ scores }: { scores: TrendPoint[] }) {
       role="img"
       aria-label="Score trend over time"
     >
-      <path d={path} fill="none" stroke="#059669" strokeWidth={2} />
+      <path d={path} fill="none" stroke="#2d6339" strokeWidth={2} />
       {points.map((p, i) => (
         <circle
           key={i}
           cx={toSvgX(p.x)}
           cy={toSvgY(p.y)}
           r={3}
-          fill="#059669"
+          fill="#2d6339"
         />
       ))}
     </svg>

@@ -17,15 +17,17 @@ export default async function Home() {
     if (!latestPlan) {
       return (
         <main className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
-          <h1 className="text-2xl font-semibold">ScratchGolf</h1>
-          <p className="text-neutral-500">
-            No training plan yet. Browse the drills, log a few scores, then
-            generate your first weekly plan.
+          <h1 className="text-xl font-semibold text-fairway-800">
+            No plan yet
+          </h1>
+          <p className="max-w-xs text-sand-600">
+            Browse the drills, log a few scores, then generate your first
+            weekly plan.
           </p>
           <div className="flex items-center gap-3">
             <Link
               href="/drills"
-              className="rounded-lg border border-neutral-300 px-6 py-3"
+              className="flex min-h-12 items-center rounded-lg border border-sand-300 px-6 font-medium text-sand-700"
             >
               Browse drills
             </Link>
@@ -52,7 +54,9 @@ export default async function Home() {
 
     return (
       <main className="flex flex-1 flex-col gap-4 px-4 py-6">
-        <h1 className="text-2xl font-semibold">This week&apos;s plan</h1>
+        <h1 className="text-xl font-semibold text-fairway-800">
+          This week&apos;s plan
+        </h1>
         {showNudge && <PlanNudgeBanner />}
         <WeeklyPlanCard
           summary={latestPlan.summary}
@@ -66,8 +70,12 @@ export default async function Home() {
     const message = error instanceof Error ? error.message : String(error);
     return (
       <main className="flex flex-1 flex-col items-center justify-center gap-2 px-6 text-center">
-        <h1 className="text-2xl font-semibold">ScratchGolf</h1>
-        <p className="text-sm text-red-600">Failed to load: {message}</p>
+        <h1 className="text-xl font-semibold text-fairway-800">
+          Couldn&apos;t load your plan
+        </h1>
+        <p role="alert" className="text-sm text-red-600">
+          {message}
+        </p>
       </main>
     );
   }

@@ -27,21 +27,24 @@ export default async function TrendsPage() {
 
   return (
     <main className="flex flex-1 flex-col gap-8 px-4 py-6">
-      <h1 className="text-2xl font-semibold">Trends</h1>
+      <h1 className="text-xl font-semibold text-fairway-800">Trends</h1>
       {(Object.keys(SKILL_AREA_LABELS) as Drill["skillArea"][]).map((area) => {
         const groupDrills = bySkillArea.get(area);
         if (!groupDrills?.length) return null;
         return (
           <section key={area} className="flex flex-col gap-4">
-            <h2 className="text-lg font-semibold">
+            <h2 className="text-lg font-semibold text-fairway-800">
               {SKILL_AREA_LABELS[area]}
             </h2>
             {groupDrills.map((drill) => (
               <div
                 key={drill.id}
-                className="flex flex-col gap-2 rounded-lg border border-neutral-200 p-4"
+                className="flex flex-col gap-2 rounded-lg border border-sand-200 bg-white p-4"
               >
-                <Link href={`/drills/${drill.id}`} className="font-medium">
+                <Link
+                  href={`/drills/${drill.id}`}
+                  className="font-medium text-sand-900"
+                >
                   {drill.name}
                 </Link>
                 <TrendChart scores={drill.scoreLogs} />

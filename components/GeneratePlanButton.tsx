@@ -27,7 +27,7 @@ export function GeneratePlanButton() {
         type="button"
         onClick={handleClick}
         disabled={pending}
-        className="rounded-lg bg-emerald-600 px-6 py-3 text-white disabled:opacity-50"
+        className="min-h-12 rounded-lg bg-fairway-600 px-6 font-medium text-white disabled:opacity-50"
       >
         {pending ? "Generating..." : "Generate my first plan"}
       </button>

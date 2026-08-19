@@ -31,7 +31,7 @@ export function PlanNudgeBanner() {
           type="button"
           onClick={handleRegenerate}
           disabled={pending}
-          className="rounded-lg bg-amber-600 px-4 py-2 text-sm text-white disabled:opacity-50"
+          className="min-h-11 shrink-0 rounded-lg bg-amber-600 px-4 text-sm font-medium text-white disabled:opacity-50"
         >
           {pending ? "Generating..." : "Regenerate"}
         </button>

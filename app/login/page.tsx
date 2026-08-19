@@ -31,25 +31,27 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="flex flex-1 flex-col items-center justify-center px-6">
+    <main className="flex flex-1 flex-col items-center justify-center bg-fairway-800 px-6">
       <form
         onSubmit={handleSubmit}
         className="flex w-full max-w-sm flex-col gap-4"
       >
-        <h1 className="text-center text-2xl font-semibold">ScratchGolf</h1>
+        <h1 className="mb-2 text-center text-3xl font-semibold text-white">
+          ScratchGolf
+        </h1>
         <input
           type="password"
           autoFocus
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="rounded-lg border border-neutral-300 px-4 py-3 text-lg"
+          className="min-h-12 rounded-lg border border-sand-300 bg-white px-4 text-lg text-sand-900 placeholder:text-sand-400"
         />
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-red-300">{error}</p>}
         <button
           type="submit"
           disabled={submitting}
-          className="rounded-lg bg-emerald-600 py-3 text-white disabled:opacity-50"
+          className="min-h-12 rounded-lg bg-gold-600 font-medium text-white disabled:opacity-50"
         >
           {submitting ? "Checking..." : "Enter"}
         </button>

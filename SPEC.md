@@ -233,3 +233,20 @@ upgraded to aim for "world class coach" quality:
   benchmark, and instructs the model to reason about tier progression
   (advance drills where scores are consistently near/above benchmark,
   reinforce where below) rather than just picking weak-looking scores.
+
+## Revision: UI Polish (Task 10)
+
+- Added a real color system (fairway green / warm sand neutrals / gold
+  accent) replacing default Tailwind grays, plus top/bottom navigation
+  (previously missing — users had to type URLs by hand, and there was no
+  logout button in the UI).
+- Deliberately ships **one fixed light theme**, not an adaptive
+  dark/light system. An initial attempt at dark-mode support (via
+  `prefers-color-scheme`) inverted the brand color scale so text stayed
+  readable, which broke fixed-purpose uses of the same scale (e.g. the
+  login screen's dark background flipped to pale mint under a dark
+  system theme). Properly supporting both themes needs a separate
+  semantic token layer (surface/background/border) on top of the raw
+  brand palette — real design-system work disproportionate to a
+  personal single-user app with no dark-mode requirement. One correct
+  theme beats two half-working ones.
