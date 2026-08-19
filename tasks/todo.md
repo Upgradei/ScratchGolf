@@ -422,8 +422,20 @@ an actual phone.
 ---
 
 ## Checkpoint: Complete
-- [ ] All Success Criteria in `SPEC.md` are met
-- [ ] `npm test` and `npx tsc --noEmit` pass
+- [x] All Success Criteria in `SPEC.md` are met — login, browsing,
+      3-input score logging, trends, nudge, plan regeneration with
+      benchmark-aware reasoning all confirmed live in production by the
+      user during this session
+- [x] `npm test` and `npx tsc --noEmit` pass
 - [ ] Manually verified on an actual phone browser, not just responsive
-      devtools
-- [ ] Ready for review
+      devtools — **pending user confirmation of Task 10's UI/nav
+      overhaul specifically**; verified extensively on this end via
+      Playwright against real Chromium at 375px/390px (stronger than
+      devtools emulation, real rendering engine) but that's still not a
+      substitute for the user's own physical device
+- [ ] Ready for review — pending the one item above
+
+**Project is functionally complete.** All 12 planned tasks across all 3
+phases are done and verified (locally and, for the core user flow,
+live in production). The single remaining item before formal sign-off
+is the user confirming the new navigation/UI on their own phone.
