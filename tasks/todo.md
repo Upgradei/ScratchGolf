@@ -395,14 +395,22 @@ are set on Vercel, do a full smoke test against the production URL from
 an actual phone.
 
 **Acceptance criteria:**
-- [ ] `APP_PASSWORD`, `DATABASE_URL`, `ANTHROPIC_API_KEY` all set in
-      Vercel project settings (not committed to the repo)
-- [ ] Production build succeeds and deploys
-- [ ] Full user flow smoke-tested on the live URL from a phone
+- [x] `APP_PASSWORD`, `DATABASE_URL`, `ANTHROPIC_API_KEY` all set in
+      Vercel project settings, correctly scoped to the actual project/
+      database in use (this took real debugging — see the Core Features
+      checkpoint notes for the duplicate-project and stale-DATABASE_URL
+      issues that were found and fixed)
+- [x] Production build succeeds and deploys — confirmed via Vercel
+      deployment history after every push in this session
+- [ ] Full user flow smoke-tested on the live URL from a phone —
+      **pending the user's own check**, since Task 10 restructured
+      routing (moved pages into an `(app)` route group) and overhauled
+      every screen's UI; local build/tests/Playwright screenshots all
+      pass, but this specific change should be confirmed live
 
 **Verification:**
 - [ ] Manual check: complete login → browse → log score → trends →
-      regenerate plan flow on the deployed URL
+      regenerate plan flow on the deployed URL — **pending user**
 
 **Dependencies:** Task 10, Task 11
 
