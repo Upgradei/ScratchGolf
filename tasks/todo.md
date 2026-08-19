@@ -279,12 +279,11 @@ and stores it as a new `WeeklyPlan`.
 **Verification:**
 - [x] Unit test: `buildPlanPrompt` tested with drill/score inputs (no live
       API call in tests) — 5 tests
-- [ ] Manual check: trigger regeneration for real, confirm a sensible plan
-      is generated and displayed — **pending the user's own test once
-      `ANTHROPIC_API_KEY` is set on Vercel** (this sandbox verified the
-      error-handling path with a deliberately invalid key — caught and
-      fixed a real unhandled-exception bug — but has no real key to test
-      the happy path)
+- [x] Manual check: trigger regeneration for real, confirm a sensible plan
+      is generated and displayed — **confirmed live by the user**: a real
+      balanced starter plan generated across all 4 skill areas, with
+      benchmark-aware reasoning in every focus item (e.g. "scratch golfers
+      find the sweet zone on 8-9 of 10"), exactly as designed
 
 **Dependencies:** Task 8
 
@@ -298,10 +297,28 @@ and stores it as a new `WeeklyPlan`.
 ---
 
 ## Checkpoint: Core Features
-- [ ] End-to-end flow works on a phone-width browser: log in → browse
-      drills → log a score → see it reflected in trends → see the nudge
-      appear once thresholds are crossed → regenerate plan → see new plan
-- [ ] **Review with human before proceeding**
+- [x] End-to-end flow works: log in → browse drills (36, organized by
+      skill area and difficulty tier) → regenerate plan → real
+      benchmark-aware AI plan generated and displayed. Confirmed live by
+      the user in production.
+- [x] **Reviewed with human** — hit and resolved several real production
+      issues along the way (see below), all fixed and verified live.
+
+**Core Features phase complete.** Notable issues found and fixed during
+this phase, beyond the original task list:
+- Vercel serverless function default timeout (10s) was too short for
+  Claude's response time — fixed with `maxDuration = 60`.
+- Error handling in the regenerate route only caught Anthropic SDK
+  errors, not all failures — widened to a catch-all with real error
+  messages surfaced to the UI.
+- Two separate Vercel projects existed for this repo; `ANTHROPIC_API_KEY`
+  was only in one. Resolved by confirming the correct project.
+- The correct project's `DATABASE_URL` had been set manually and pointed
+  at a stale/wrong database rather than being linked via Vercel's Storage
+  integration — reconnected properly.
+- Per user request, upgraded the curriculum (13 → 36 drills, added
+  difficulty tiers and scratch-golfer benchmarks) and the plan-generation
+  prompt to reason about benchmark comparison and tier progression.
 
 ---
 
