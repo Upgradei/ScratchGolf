@@ -39,6 +39,11 @@ export async function POST() {
         difficultyLevel: d.difficultyLevel,
         scoreLabel: d.scoreLabel,
         benchmarkNote: d.benchmarkNote,
+        coaching: d.coaching,
+        higherIsBetter: d.higherIsBetter,
+        benchmarks: Array.isArray(d.benchmarks)
+          ? (d.benchmarks as number[])
+          : null,
       })),
       recentScoreLogs.map((s) => ({
         drillId: s.drillId,

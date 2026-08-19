@@ -29,9 +29,17 @@
   --color-sand-900: #2e281f;
 
   /* Gold accent - for benchmark/achievement highlights */
-  --color-gold-100: #faf0da;
+  --color-gold-100: #f3e6bd;
+  --color-gold-400: #d9b64a;
+  --color-gold-500: #c9a227;
   --color-gold-600: #a8791f;
   --color-gold-700: #8a6119;
+
+  /* Warm ink neutrals for secondary text on cream */
+  --color-ink-500: #6b6a5f;
+  --color-ink-700: #3a3a33;
+
+  --card-radius: 22px;
 }
 
 @theme inline {
@@ -58,10 +66,14 @@
   --color-sand-800: var(--color-sand-800);
   --color-sand-900: var(--color-sand-900);
   --color-gold-100: var(--color-gold-100);
+  --color-gold-400: var(--color-gold-400);
+  --color-gold-500: var(--color-gold-500);
   --color-gold-600: var(--color-gold-600);
   --color-gold-700: var(--color-gold-700);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-ink-500: var(--color-ink-500);
+  --color-ink-700: var(--color-ink-700);
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
 }
 
 /* Single fixed theme by design - see SPEC.md. Prevents the browser's
@@ -73,5 +85,22 @@
 body {
   background: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+/* Display serif for headlines and the brand. */
+.font-display {
+  font-family: var(--font-display), Georgia, serif;
+}
+
+/* Gold underline accent under a section heading (Editorial variant). */
+.section-accent::after {
+  content: "";
+  display: block;
+  width: 26px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--color-gold-500);
+  margin-top: 6px;
 }

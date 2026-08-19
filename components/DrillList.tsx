@@ -52,7 +52,7 @@ export function DrillList({ drills }: { drills: Drill[] }) {
             id={area.toLowerCase()}
             className="flex scroll-mt-4 flex-col gap-4"
           >
-            <h2 className="text-lg font-semibold text-fairway-800">
+            <h2 className="section-accent font-display text-xl font-semibold text-fairway-800">
               {SKILL_AREA_LABELS[area]}
             </h2>
             {DIFFICULTY_ORDER.map((tier) => {

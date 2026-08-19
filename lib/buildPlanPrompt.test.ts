@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { buildPlanPrompt } from "./buildPlanPrompt";
+import { buildPlanPrompt, type PromptDrill } from "./buildPlanPrompt";
 
-const drills = [
+const drills: PromptDrill[] = [
   {
     id: "d1",
     name: "Fairway Finder",
@@ -9,6 +9,9 @@ const drills = [
     difficultyLevel: "BEGINNER",
     scoreLabel: "fairways hit / 10",
     benchmarkNote: "Scratch golfers hit 6-7 of 10 fairways.",
+    coaching: "Feel: commit to one shape every time.",
+    higherIsBetter: true,
+    benchmarks: [2, 3, 4, 6, 7, 9],
   },
   {
     id: "d2",
@@ -17,6 +20,9 @@ const drills = [
     difficultyLevel: "BEGINNER",
     scoreLabel: "putts through gate / 10",
     benchmarkNote: null,
+    coaching: "Feel: rock the stroke from the shoulders.",
+    higherIsBetter: true,
+    benchmarks: [5, 6, 7, 8, 9, 10],
   },
 ];
 
@@ -31,16 +37,10 @@ describe("buildPlanPrompt", () => {
     expect(user).toContain("Gate Drill");
   });
 
-  it("includes a drill's benchmark note when present", () => {
+  it("includes each drill's technique coaching in the drill list", () => {
     const { user } = buildPlanPrompt(drills, []);
-    expect(user).toContain("Scratch golfers hit 6-7 of 10 fairways.");
-  });
-
-  it("omits a benchmark segment for drills with no benchmark note", () => {
-    const { user } = buildPlanPrompt([drills[1]], []);
-    const gateLine = user.split("\n").find((line) => line.includes("Gate Drill"));
-    expect(gateLine).toBeDefined();
-    expect(gateLine).not.toContain("benchmark:");
+    expect(user).toContain("commit to one shape");
+    expect(user).toContain("rock the stroke from the shoulders");
   });
 
   it("tells the model to build a balanced starter plan when there is no score history", () => {
@@ -57,6 +57,20 @@ describe("buildPlanPrompt", () => {
     expect(user).toContain("2026-08-10");
   });
 
+  it("computes and includes the player's current tier rank for practiced drills", () => {
+    const { user } = buildPlanPrompt(drills, [
+      { drillId: "d1", drillName: "Fairway Finder", value: 4, loggedAt: new Date("2026-08-10") },
+    ]);
+    // recent avg 4 → Bogey golfer, 2 more to reach Single-digit
+    expect(user).toContain("Bogey golfer");
+    expect(user).toContain("Single-digit");
+  });
+
+  it("notes when no drills have enough scores to rank yet", () => {
+    const { user } = buildPlanPrompt(drills, []);
+    expect(user).toContain("No drills have enough scores to rank yet.");
+  });
+
   it("instructs the model to reference real drillIds and give a targetReps and focusNote", () => {
     const { user } = buildPlanPrompt(drills, []);
     expect(user).toContain("drillId");
@@ -64,11 +78,10 @@ describe("buildPlanPrompt", () => {
     expect(user).toContain("focusNote");
   });
 
-  it("sets a system prompt establishing the coaching role and benchmark-based reasoning", () => {
+  it("sets a system prompt establishing the coaching role and tier-based reasoning", () => {
     const { system } = buildPlanPrompt(drills, []);
     expect(system.toLowerCase()).toContain("golf");
     expect(system.toLowerCase()).toContain("coach");
-    expect(system.toLowerCase()).toContain("benchmark");
     expect(system.toLowerCase()).toContain("tier");
   });
 });

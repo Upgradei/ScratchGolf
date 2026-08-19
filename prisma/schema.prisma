@@ -31,6 +31,15 @@ model Drill {
   instructions    String
   scoreLabel      String
   benchmarkNote   String?
+  // Technique coaching: what good looks like, the key feel, and the common
+  // fault + fix — the "how to actually hit it well" layer.
+  coaching        String?
+  // true when a higher score is better (fairways hit); false when lower is
+  // better (avg putts, dispersion in feet). Drives the ranking direction.
+  higherIsBetter  Boolean         @default(true)
+  // Six-threshold tier ladder (Beginner → Tour) for this drill's metric,
+  // consumed by lib/rank.ts. Stored as a JSON array of six numbers.
+  benchmarks      Json?
   createdAt       DateTime        @default(now())
   scoreLogs       ScoreLog[]
 }
