@@ -47,7 +47,11 @@ export function DrillList({ drills }: { drills: Drill[] }) {
         const byDifficulty = groupBy(groupDrills, (d) => d.difficultyLevel);
 
         return (
-          <section key={area} className="flex flex-col gap-4">
+          <section
+            key={area}
+            id={area.toLowerCase()}
+            className="flex scroll-mt-4 flex-col gap-4"
+          >
             <h2 className="text-lg font-semibold text-fairway-800">
               {SKILL_AREA_LABELS[area]}
             </h2>

@@ -5,6 +5,7 @@ import { shouldNudgeRegeneration } from "@/lib/planNudge";
 import { WeeklyPlanCard } from "@/components/WeeklyPlanCard";
 import { PlanNudgeBanner } from "@/components/PlanNudgeBanner";
 import { GeneratePlanButton } from "@/components/GeneratePlanButton";
+import { SkillAreaPicker } from "@/components/SkillAreaPicker";
 
 export const dynamic = "force-dynamic";
 
@@ -16,22 +17,25 @@ export default async function Home() {
 
     if (!latestPlan) {
       return (
-        <main className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
-          <h1 className="text-xl font-semibold text-fairway-800">
-            No plan yet
-          </h1>
-          <p className="max-w-xs text-sand-600">
-            Browse the drills, log a few scores, then generate your first
-            weekly plan.
-          </p>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/drills"
-              className="flex min-h-12 items-center rounded-lg border border-sand-300 px-6 font-medium text-sand-700"
-            >
-              Browse drills
-            </Link>
-            <GeneratePlanButton />
+        <main className="flex flex-1 flex-col gap-6 px-4 py-6">
+          <SkillAreaPicker />
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 px-2 text-center">
+            <h1 className="text-xl font-semibold text-fairway-800">
+              No plan yet
+            </h1>
+            <p className="max-w-xs text-sand-600">
+              Browse the drills, log a few scores, then generate your first
+              weekly plan.
+            </p>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/drills"
+                className="flex min-h-12 items-center rounded-lg border border-sand-300 px-6 font-medium text-sand-700"
+              >
+                Browse drills
+              </Link>
+              <GeneratePlanButton />
+            </div>
           </div>
         </main>
       );
@@ -54,6 +58,7 @@ export default async function Home() {
 
     return (
       <main className="flex flex-1 flex-col gap-4 px-4 py-6">
+        <SkillAreaPicker />
         <h1 className="text-xl font-semibold text-fairway-800">
           This week&apos;s plan
         </h1>
