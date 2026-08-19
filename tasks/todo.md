@@ -332,14 +332,25 @@ transitions — since SPEC.md treats this as a first-class requirement, not
 cosmetic-only.
 
 **Acceptance criteria:**
-- [ ] Consistent spacing/typography scale applied across all screens
-- [ ] Touch targets sized appropriately for mobile (buttons, inputs)
-- [ ] A coherent color palette (not default Tailwind grays/blues) fitting
-      a golf/training aesthetic
-- [ ] No layout breakage at common phone widths (375px–430px)
+- [x] Consistent spacing/typography scale applied across all screens
+- [x] Touch targets sized appropriately for mobile (buttons, inputs) —
+      44px+ verified programmatically via Playwright DOM measurement
+- [x] A coherent color palette (fairway green / warm sand / gold accent)
+      replacing default Tailwind grays
+- [x] No layout breakage at common phone widths (375px–430px) — verified
+      via Playwright screenshots at 375px and 390px
+- [x] (Not originally listed, but a real gap found during this pass) —
+      added top bar with logout and bottom tab navigation; there was
+      previously no in-app way to log out or move between pages
 
 **Verification:**
-- [ ] Manual check: walk through every screen on an actual phone browser
+- [x] Manual check: walked through every screen via Playwright against
+      the pre-installed Chromium (not a real phone, but real rendering,
+      not just a description) — login, home (empty + populated), drills,
+      drill detail, trends, at 375px/390px and simulated dark system
+      theme. Caught and fixed 2 real bugs: a dark-mode color inversion
+      that broke the login screen's background, and a plan-card link
+      that only covered ~21px of tappable height instead of the full card
 
 **Dependencies:** Task 9
 
@@ -358,12 +369,15 @@ prompt construction are covered in Tasks 8–9; this task covers any
 scoring/aggregation helpers used by the trends view).
 
 **Acceptance criteria:**
-- [ ] Aggregation helpers used in Task 6 have unit tests
-- [ ] `npm test` passes with no skipped/pending tests
+- [x] Aggregation helpers used in Task 6 have unit tests — `lib/trends.ts`
+      (`toTrendPoints`) already covered by 6 tests written via TDD in
+      Task 6, no gap to fill
+- [x] `npm test` passes with no skipped/pending tests — 20 tests across
+      3 files (`planNudge`, `buildPlanPrompt`, `trends`), none skipped
 
 **Verification:**
-- [ ] `npm test` passes
-- [ ] `npx tsc --noEmit` passes
+- [x] `npm test` passes
+- [x] `npx tsc --noEmit` passes (exit 0)
 
 **Dependencies:** Task 6
 
