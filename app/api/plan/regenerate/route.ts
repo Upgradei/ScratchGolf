@@ -36,7 +36,9 @@ export async function POST() {
         id: d.id,
         name: d.name,
         skillArea: d.skillArea,
+        difficultyLevel: d.difficultyLevel,
         scoreLabel: d.scoreLabel,
+        benchmarkNote: d.benchmarkNote,
       })),
       recentScoreLogs.map((s) => ({
         drillId: s.drillId,

@@ -59,15 +59,23 @@ enum SkillArea {
   PUTTING
 }
 
+enum DifficultyLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
 model Drill {
-  id          String   @id @default(cuid())
-  name        String
-  skillArea   SkillArea
-  description String
-  instructions String
-  scoreLabel  String   // e.g. "makes out of 10", "avg distance to hole (ft)"
-  createdAt   DateTime @default(now())
-  scoreLogs   ScoreLog[]
+  id              String   @id @default(cuid())
+  name            String
+  skillArea       SkillArea
+  difficultyLevel DifficultyLevel
+  description     String
+  instructions    String
+  scoreLabel      String   // e.g. "makes out of 10", "avg distance to hole (ft)"
+  benchmarkNote   String?  // e.g. "Scratch golfers make 13-15/15 from this drill"
+  createdAt       DateTime @default(now())
+  scoreLogs       ScoreLog[]
 }
 
 model ScoreLog {
@@ -204,7 +212,24 @@ export function ScoreLogForm({ drillId }: { drillId: string }) {
 
 ## Open Questions
 
-- Exact initial drill curriculum content (drill count, specific
-  instructions/scoring per drill) — to be authored during implementation,
-  not blocking spec approval.
-- None blocking — ready for Plan phase pending your review.
+- None blocking.
+
+## Revision: Expert-Level Curriculum (post Task 9)
+
+Per user request, the drill library and weekly-plan reasoning were
+upgraded to aim for "world class coach" quality:
+
+- Added `difficultyLevel` (BEGINNER/INTERMEDIATE/ADVANCED) and
+  `benchmarkNote` (a scratch-golfer performance reference, e.g. "makes
+  13-15/15") to `Drill`, so both the UI and the plan-generation prompt
+  can reason about skill progression and benchmark against a concrete
+  standard rather than just relative trend.
+- Expanded the curriculum from 13 to 36 drills — 3 difficulty tiers ×
+  ~3 drills per skill area — covering fundamentals through
+  pressure/scrambling simulations, grounded in widely-taught golf
+  instruction concepts (gate drills, ladder drills, up-and-down
+  scrambling percentages, etc.) rather than invented methodology.
+- `buildPlanPrompt` now includes each drill's difficulty tier and
+  benchmark, and instructs the model to reason about tier progression
+  (advance drills where scores are consistently near/above benchmark,
+  reinforce where below) rather than just picking weak-looking scores.

@@ -26,10 +26,18 @@ export default async function DrillDetailPage({
   return (
     <main className="flex flex-1 flex-col gap-6 px-4 py-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-semibold">{drill.name}</h1>
+        <div className="flex items-center gap-2">
+          <h1 className="text-2xl font-semibold">{drill.name}</h1>
+          <span className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-600">
+            {drill.difficultyLevel}
+          </span>
+        </div>
         <p className="text-neutral-600">{drill.description}</p>
         <p className="whitespace-pre-wrap">{drill.instructions}</p>
         <p className="text-sm text-neutral-500">Scored as: {drill.scoreLabel}</p>
+        {drill.benchmarkNote && (
+          <p className="text-sm text-emerald-700">{drill.benchmarkNote}</p>
+        )}
       </div>
 
       <ScoreLogForm drillId={drill.id} />

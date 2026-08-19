@@ -16,15 +16,23 @@ enum SkillArea {
   PUTTING
 }
 
+enum DifficultyLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
 model Drill {
-  id           String     @id @default(cuid())
-  name         String
-  skillArea    SkillArea
-  description  String
-  instructions String
-  scoreLabel   String
-  createdAt    DateTime   @default(now())
-  scoreLogs    ScoreLog[]
+  id              String          @id @default(cuid())
+  name            String
+  skillArea       SkillArea
+  difficultyLevel DifficultyLevel
+  description     String
+  instructions    String
+  scoreLabel      String
+  benchmarkNote   String?
+  createdAt       DateTime        @default(now())
+  scoreLogs       ScoreLog[]
 }
 
 model ScoreLog {
