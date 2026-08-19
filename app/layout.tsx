@@ -15,12 +15,19 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ScratchGolf",
   description: "Personal training tracker for becoming a scratch golfer",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "ScratchGolf",
+  },
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  themeColor: "#254f2f",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
