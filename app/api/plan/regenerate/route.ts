@@ -13,6 +13,17 @@ export const maxDuration = 60;
 
 export async function POST() {
   try {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return NextResponse.json(
+        {
+          error:
+            "ANTHROPIC_API_KEY is not set in this deployment's environment " +
+            "(the function does not see it at all - not an invalid-key issue)",
+        },
+        { status: 500 },
+      );
+    }
+
     const drills = await db.drill.findMany();
     const recentScoreLogs = await db.scoreLog.findMany({
       orderBy: { loggedAt: "desc" },
