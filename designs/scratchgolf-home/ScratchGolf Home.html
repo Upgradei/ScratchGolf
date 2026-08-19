@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="ScratchGolf" />
+<title>ScratchGolf Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* fairway greens */
+    --green-900: #16331e;
+    --green-800: #1d4326;
+    --green-700: #254f2f;
+    --green-600: #2f6339;
+    --green-500: #3c7a48;
+    /* sand / cream neutrals */
+    --sand-50: #fbfaf7;
+    --sand-100: #f5f1e8;
+    --sand-200: #ece5d5;
+    --sand-300: #ddd2ba;
+    --ink-700: #3a3a33;
+    --ink-500: #6b6a5f;
+    /* gold accent */
+    --gold-500: #c9a227;
+    --gold-400: #d9b64a;
+    --gold-100: #f3e6bd;
+
+    --card-radius: 22px;
+    --sans: "Outfit", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --display: "Fraunces", Georgia, serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; overscroll-behavior: none; }
+  body {
+    font-family: var(--sans);
+    background: #0e0e0c;
+    display: grid;
+    place-items: center;
+    color: var(--ink-700);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #app {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background: var(--sand-50);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .scroll {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-top: env(safe-area-inset-top);
+  }
+  @media (min-width: 700px) {
+    #app {
+      width: 402px;
+      height: 858px;
+      border-radius: 46px;
+      box-shadow: 0 40px 90px rgba(0,0,0,0.45), 0 0 0 10px #1a1a17, 0 0 0 11px #2c2c26;
+    }
+    body { background: radial-gradient(120% 120% at 50% 0%, #1c1c18 0%, #0b0b09 70%); }
+  }
+
+  /* ---------- variant switch (dev control) ---------- */
+  .variant-bar {
+    position: fixed;
+    top: 14px; left: 50%; transform: translateX(-50%);
+    z-index: 100;
+    display: flex; gap: 4px;
+    padding: 4px;
+    background: rgba(20,20,17,0.72);
+    backdrop-filter: blur(10px);
+    border-radius: 999px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  .variant-bar button {
+    font-family: var(--sans); font-size: 12px; font-weight: 600;
+    color: #d9d5c9; background: transparent; border: none;
+    padding: 7px 14px; border-radius: 999px; cursor: pointer;
+    letter-spacing: 0.2px;
+  }
+  .variant-bar button.active { background: var(--gold-500); color: #2a2306; }
+
+  /* ---------- top / hero ---------- */
+  .hero {
+    position: relative;
+    background:
+      radial-gradient(140% 90% at 80% -10%, var(--green-600) 0%, var(--green-700) 42%, var(--green-800) 100%);
+    color: var(--sand-50);
+    padding: calc(env(safe-area-inset-top) + 26px) 22px 30px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+  }
+  .hero::after {
+    content: "";
+    position: absolute; inset: 0;
+    background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1.4px);
+    background-size: 16px 16px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+    pointer-events: none;
+  }
+  .hero-top { display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 1; }
+  .brand { display: flex; align-items: center; gap: 9px; }
+  .brand-mark {
+    width: 30px; height: 30px; border-radius: 9px;
+    background: var(--gold-500);
+    display: grid; place-items: center;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+  }
+  .brand-name { font-family: var(--display); font-weight: 600; font-size: 19px; letter-spacing: 0.2px; }
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: linear-gradient(160deg, var(--gold-400), var(--gold-500));
+    display: grid; place-items: center;
+    font-weight: 700; font-size: 14px; color: #2a2306;
+    border: 1.5px solid rgba(255,255,255,0.35);
+  }
+
+  .greeting { position: relative; z-index: 1; margin-top: 22px; }
+  .greeting .eyebrow {
+    font-size: 12px; font-weight: 600; letter-spacing: 1.4px; text-transform: uppercase;
+    color: var(--gold-100); opacity: 0.85;
+  }
+  .greeting h1 {
+    font-family: var(--display); font-weight: 600; font-size: 27px; line-height: 1.15;
+    margin-top: 5px; color: #fff;
+  }
+
+  .handicap-strip {
+    position: relative; z-index: 1;
+    margin-top: 20px;
+    display: flex; gap: 10px;
+  }
+  .stat {
+    flex: 1;
+    background: rgba(255,255,255,0.09);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 15px;
+    padding: 11px 13px;
+    backdrop-filter: blur(4px);
+  }
+  .stat .num { font-family: var(--display); font-weight: 600; font-size: 21px; color: #fff; line-height: 1; }
+  .stat .num small { font-size: 12px; font-weight: 500; opacity: 0.7; }
+  .stat .lbl { font-size: 11px; margin-top: 4px; color: rgba(255,255,255,0.75); font-weight: 500; }
+  .stat .num.up { color: var(--gold-400); }
+
+  /* ---------- content ---------- */
+  .content { padding: 22px 18px 26px; }
+
+  .section-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin: 4px 2px 13px;
+  }
+  .section-head h2 {
+    font-family: var(--display); font-weight: 600; font-size: 18px; color: var(--green-800);
+    letter-spacing: 0.1px;
+  }
+  .section-head .link { font-size: 13px; font-weight: 600; color: var(--green-500); }
+
+  /* skill picker */
+  .picker {
+    background: #fff;
+    border: 1px solid var(--sand-200);
+    border-radius: var(--card-radius);
+    padding: 18px 16px 16px;
+    box-shadow: 0 10px 30px rgba(37,79,47,0.06);
+    margin-bottom: 22px;
+  }
+  .caddie-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; margin-bottom: 15px; }
+  .caddie {
+    width: 74px; height: 74px;
+    border-radius: 50%;
+    background: radial-gradient(120% 120% at 50% 20%, var(--green-600), var(--green-800));
+    display: grid; place-items: center;
+    box-shadow: inset 0 -6px 14px rgba(0,0,0,0.22), 0 6px 16px rgba(37,79,47,0.28);
+  }
+  .caddie svg { display: block; }
+  .caddie-cta { font-size: 12.5px; color: var(--ink-500); font-weight: 500; }
+  .caddie-cta b { color: var(--green-700); font-weight: 600; }
+
+  .grid4 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .area {
+    appearance: none; border: 1px solid var(--sand-200); cursor: pointer;
+    background: var(--sand-50);
+    border-radius: 16px;
+    padding: 13px 13px;
+    display: flex; align-items: center; gap: 11px;
+    text-align: left;
+    transition: transform 0.14s ease, box-shadow 0.14s ease, border-color 0.14s ease, background 0.14s ease;
+    font-family: var(--sans);
+  }
+  .area:active { transform: scale(0.97); }
+  .area.hot {
+    background: #fff;
+    border-color: var(--green-500);
+    box-shadow: 0 8px 20px rgba(37,79,47,0.16);
+    transform: translateY(-2px);
+  }
+  .area .ico {
+    width: 38px; height: 38px; border-radius: 11px;
+    display: grid; place-items: center; flex-shrink: 0;
+    background: var(--green-700); color: var(--sand-50);
+  }
+  .area.hot .ico { background: var(--gold-500); color: #2a2306; }
+  .area .txt .t { font-size: 14px; font-weight: 600; color: var(--green-900); line-height: 1.1; }
+  .area .txt .s { font-size: 11px; color: var(--ink-500); margin-top: 2px; }
+
+  /* plan card */
+  .plan {
+    background: #fff;
+    border: 1px solid var(--sand-200);
+    border-radius: var(--card-radius);
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(37,79,47,0.06);
+  }
+  .plan-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 18px 12px;
+  }
+  .plan-head .wk { display: flex; align-items: center; gap: 9px; }
+  .flag-chip {
+    width: 30px; height: 30px; border-radius: 9px; background: var(--green-700);
+    display: grid; place-items: center; color: var(--gold-400);
+  }
+  .plan-head .ttl { font-family: var(--display); font-weight: 600; font-size: 16px; color: var(--green-800); line-height: 1; }
+  .plan-head .sub { font-size: 11.5px; color: var(--ink-500); margin-top: 3px; }
+  .pill {
+    font-size: 11px; font-weight: 600; color: var(--green-700);
+    background: var(--sand-100); border: 1px solid var(--sand-200);
+    padding: 5px 10px; border-radius: 999px;
+  }
+
+  .progress { padding: 0 18px 6px; }
+  .progress .bar { height: 7px; border-radius: 999px; background: var(--sand-200); overflow: hidden; }
+  .progress .fill { height: 100%; width: 40%; border-radius: 999px; background: linear-gradient(90deg, var(--green-500), var(--gold-500)); }
+  .progress .cap { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink-500); margin-top: 7px; font-weight: 500; }
+
+  .drill {
+    display: flex; align-items: center; gap: 13px;
+    padding: 14px 18px;
+    border-top: 1px solid var(--sand-100);
+    cursor: pointer;
+    min-height: 62px;
+    transition: background 0.12s ease;
+  }
+  .drill:active { background: var(--sand-50); }
+  .drill .num {
+    width: 26px; height: 26px; border-radius: 8px; flex-shrink: 0;
+    background: var(--sand-100); color: var(--green-700);
+    display: grid; place-items: center; font-size: 12px; font-weight: 700;
+  }
+  .drill.done .num { background: var(--green-600); color: #fff; }
+  .drill .body { flex: 1; min-width: 0; }
+  .drill .body .name { font-size: 14.5px; font-weight: 600; color: var(--green-900); line-height: 1.2; }
+  .drill.done .body .name { color: var(--ink-500); text-decoration: line-through; text-decoration-color: var(--sand-300); }
+  .drill .body .meta { font-size: 11.5px; color: var(--ink-500); margin-top: 3px; display: flex; align-items: center; gap: 7px; }
+  .tag {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;
+    padding: 2px 7px; border-radius: 6px;
+  }
+  .tag.driver { background: #e4eee2; color: #2c6a3a; }
+  .tag.approach { background: #eae6d3; color: #8a6d1a; }
+  .tag.chip { background: #e6ede9; color: #316b56; }
+  .tag.putt { background: #f3e6bd; color: #8a6d1a; }
+  .drill .chev { color: var(--sand-300); flex-shrink: 0; }
+
+  /* bottom nav */
+  .nav {
+    flex: 0 0 auto;
+    z-index: 20;
+    background: rgba(255,255,255,0.94);
+    backdrop-filter: blur(14px);
+    border-top: 1px solid var(--sand-200);
+    padding: 9px 0 calc(9px + env(safe-area-inset-bottom));
+    display: grid; grid-template-columns: repeat(3, 1fr);
+  }
+  .nav button {
+    background: none; border: none; cursor: pointer; font-family: var(--sans);
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    color: var(--ink-500); font-size: 10.5px; font-weight: 600;
+    padding: 4px 0;
+  }
+  .nav button.active { color: var(--green-700); }
+  .nav button .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--green-700); opacity: 0; }
+  .nav button.active .dot { opacity: 1; }
+
+  /* ---------- VARIANT B: warm / editorial ---------- */
+  #app.vb { background: var(--sand-100); }
+  #app.vb .hero {
+    background: linear-gradient(180deg, var(--green-800) 0%, var(--green-700) 100%);
+    border-radius: 0;
+    padding-bottom: 34px;
+  }
+  #app.vb .hero::after { border-radius: 0; }
+  #app.vb .content { position: relative; z-index: 2; }
+  #app.vb .picker { margin-top: 2px; }
+  #app.vb .picker, #app.vb .plan {
+    box-shadow: 0 18px 40px rgba(22,51,30,0.12);
+    border-color: transparent;
+  }
+  #app.vb .greeting h1 { font-size: 30px; }
+  #app.vb .area { background: #fff; }
+  #app.vb .section-head h2::after {
+    content: ""; display: block; width: 26px; height: 3px; border-radius: 2px;
+    background: var(--gold-500); margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+
+<div class="variant-bar">
+  <button id="btnA" class="active" onclick="setVariant('a')">A · Fresh</button>
+  <button id="btnB" onclick="setVariant('b')">B · Editorial</button>
+</div>
+
+<div id="app" data-screen-label="Home">
+
+ <div class="scroll">
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-top">
+      <div class="brand">
+        <span class="brand-mark">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M12 21V6" stroke="#2a2306" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M12 6l7 2.6L12 11.4" stroke="#2a2306" stroke-width="2.2" stroke-linejoin="round"/>
+            <circle cx="6.5" cy="21" r="1.6" fill="#2a2306"/>
+          </svg>
+        </span>
+        <span class="brand-name">ScratchGolf</span>
+      </div>
+      <div class="avatar">N</div>
+    </div>
+
+    <div class="greeting">
+      <div class="eyebrow">Tuesday · Week 6</div>
+      <h1>Let's chase that<br/>scratch handicap, Nader.</h1>
+    </div>
+
+    <div class="handicap-strip">
+      <div class="stat">
+        <div class="num">8.4</div>
+        <div class="lbl">Handicap index</div>
+      </div>
+      <div class="stat">
+        <div class="num up">+2</div>
+        <div class="lbl">Drills logged</div>
+      </div>
+      <div class="stat">
+        <div class="num">86<small>%</small></div>
+        <div class="lbl">Putting avg</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- SKILL PICKER -->
+    <div class="section-head">
+      <h2>Where to today?</h2>
+      <span class="link">All drills</span>
+    </div>
+
+    <section class="picker">
+      <div class="caddie-wrap">
+        <div class="caddie">
+          <svg id="caddieFace" width="52" height="52" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <ellipse cx="32" cy="34" rx="19" ry="20" fill="#f4e3c8"/>
+            <path d="M13 30c0-12 9-19 19-19s19 7 19 19" fill="#254f2f"/>
+            <rect x="12" y="27" width="40" height="7" rx="3.5" fill="#254f2f"/>
+            <g id="eyes">
+              <circle class="eye" cx="26" cy="34" r="3.1" fill="#2a2a24"/>
+              <circle class="eye" cx="40" cy="34" r="3.1" fill="#2a2a24"/>
+            </g>
+            <path id="mouth" d="M27 44c2 2.4 8 2.4 10 0" stroke="#b98a5e" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="caddie-cta"><b>Your caddie</b> is watching your putting</div>
+      </div>
+
+      <div class="grid4" id="areaGrid">
+        <button class="area" data-eye="-6" onclick="pickArea(this)">
+          <span class="ico">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M4 20c9-2 13-8 16-17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M17 3l3 0 0 3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="5" cy="20" r="1.6" fill="currentColor"/></svg>
+          </span>
+          <span class="txt"><span class="t">Driver</span><span class="s">9 drills</span></span>
+        </button>
+
+        <button class="area" data-eye="6" onclick="pickArea(this)">
+          <span class="ico">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M3 21c4-9 10-13 18-15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M15 5l6 1-1 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          <span class="txt"><span class="t">Approach</span><span class="s">9 drills</span></span>
+        </button>
+
+        <button class="area" data-eye="-6" onclick="pickArea(this)">
+          <span class="ico">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M4 18c3-6 7-9 12-9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="18" cy="8" r="2" fill="currentColor"/><path d="M5 21h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          <span class="txt"><span class="t">Chipping</span><span class="s">9 drills</span></span>
+        </button>
+
+        <button class="area hot" data-eye="6" onclick="pickArea(this)">
+          <span class="ico">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none"><path d="M9 20V5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9 5l7 2.5L9 10" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><ellipse cx="9" cy="20" rx="6" ry="1.4" stroke="currentColor" stroke-width="1.6"/></svg>
+          </span>
+          <span class="txt"><span class="t">Putting</span><span class="s">9 drills</span></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- PLAN CARD -->
+    <div class="section-head">
+      <h2>This week's plan</h2>
+      <span class="link">Regenerate</span>
+    </div>
+
+    <section class="plan">
+      <div class="plan-head">
+        <div class="wk">
+          <span class="flag-chip">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M8 21V4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8 4l9 3-9 3" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          </span>
+          <div>
+            <div class="ttl">Sharpen the short game</div>
+            <div class="sub">Built for your 8.4 index</div>
+          </div>
+        </div>
+        <span class="pill">2 / 5</span>
+      </div>
+
+      <div class="progress">
+        <div class="bar"><div class="fill"></div></div>
+        <div class="cap"><span>2 drills done this week</span><span>40%</span></div>
+      </div>
+
+      <div class="drill done">
+        <div class="num">✓</div>
+        <div class="body">
+          <div class="name">Ladder putting — 3 to 9 ft</div>
+          <div class="meta"><span class="tag putt">Putting</span> Logged · made 7/10</div>
+        </div>
+      </div>
+
+      <div class="drill done">
+        <div class="num">✓</div>
+        <div class="body">
+          <div class="name">Landing-zone chip control</div>
+          <div class="meta"><span class="tag chip">Chipping</span> Logged · 6/10 inside 3ft</div>
+        </div>
+      </div>
+
+      <div class="drill">
+        <div class="num">3</div>
+        <div class="body">
+          <div class="name">Gate drill — start line</div>
+          <div class="meta"><span class="tag putt">Putting</span> Target: 8/10 through gate</div>
+        </div>
+        <span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+
+      <div class="drill">
+        <div class="num">4</div>
+        <div class="body">
+          <div class="name">50-yard wedge ladder</div>
+          <div class="meta"><span class="tag approach">Approach</span> Target: 3 zones, 2 balls each</div>
+        </div>
+        <span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+
+      <div class="drill">
+        <div class="num">5</div>
+        <div class="body">
+          <div class="name">Tee-box tempo — 7 swings</div>
+          <div class="meta"><span class="tag driver">Driver</span> Target: 5 fairways found</div>
+        </div>
+        <span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </div>
+    </section>
+
+  </main>
+ </div><!-- /scroll -->
+
+  <!-- BOTTOM NAV -->
+  <nav class="nav">
+    <button class="active">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M8 21V4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M8 4l9 3-9 3" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      <span>Plan</span><span class="dot"></span>
+    </button>
+    <button>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="2"/><path d="M8 9h8M8 13h8M8 17h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <span>Drills</span><span class="dot"></span>
+    </button>
+    <button>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M4 18l5-5 3 3 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 4v5h-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Trends</span><span class="dot"></span>
+    </button>
+  </nav>
+
+</div>
+
+<script>
+  function setVariant(v) {
+    const app = document.getElementById('app');
+    app.classList.toggle('vb', v === 'b');
+    document.getElementById('btnA').classList.toggle('active', v === 'a');
+    document.getElementById('btnB').classList.toggle('active', v === 'b');
+  }
+
+  // caddie eyes follow the active skill area
+  const eyes = document.querySelectorAll('#eyes .eye');
+  const baseX = [26, 40];
+  function look(dx) {
+    eyes.forEach((e, i) => e.setAttribute('cx', baseX[i] + dx));
+  }
+  function pickArea(el) {
+    document.querySelectorAll('.area').forEach(a => a.classList.remove('hot'));
+    el.classList.add('hot');
+    look(parseFloat(el.dataset.eye) || 0);
+  }
+  document.querySelectorAll('.area').forEach(a => {
+    a.addEventListener('mouseenter', () => look(parseFloat(a.dataset.eye) || 0));
+  });
+  // default gaze toward putting
+  look(6);
+</script>
+</body>
+</html>

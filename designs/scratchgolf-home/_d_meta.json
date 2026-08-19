@@ -1,0 +1,18 @@
+{
+  "type": "design",
+  "designSystems": [],
+  "primaryDesignSystem": null,
+  "assets": {
+    "ScratchGolf Home": {
+      "versions": [
+        {
+          "path": "ScratchGolf Home.html",
+          "createdAt": "2026-08-19T06:31:59.024Z",
+          "status": "needs-review"
+        }
+      ]
+    }
+  },
+  "createdAt": "2026-08-19T06:31:59.024Z",
+  "updatedAt": "2026-08-19T06:35:32.226Z"
+}
