@@ -3,6 +3,9 @@ import { neonConfig } from "@neondatabase/serverless";
 import ws from "ws";
 import { PrismaClient } from "@/app/generated/prisma/client";
 
+// Requires DATABASE_URL to be set via Vercel's Storage connection (or
+// equivalent) for the environment this deploys to.
+
 neonConfig.webSocketConstructor = ws;
 
 const globalForPrisma = globalThis as unknown as {
